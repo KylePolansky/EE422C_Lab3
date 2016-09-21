@@ -1,14 +1,14 @@
 /* WORD LADDER Main.java
  * EE422C Project 3 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
+ * <Kyle Polansky>
+ * <KPP446>
+ * <16480>
  * <Student2 Name>
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
  * Slip days used: <0>
- * Git URL:
+ * Git URL: https://github.com/KylePolansky/EE422C_Lab3
  * Fall 2016
  */
 
@@ -90,7 +90,10 @@ public class Main {
 		}
 		return words;
 	}
-	
+
+	/**
+	 * @param ladder WordLadder to output
+	 */
 	public static void printLadder(ArrayList<String> ladder) {
 		if (ladder == null) {
 			throw new NullPointerException("ladder is null");
