@@ -101,6 +101,9 @@ public class Main {
 		if (ladder.size() < 2) {
 			throw new IllegalArgumentException("ladder length is less than 2");
 		}
+		if (ladder.size() == 2 && !(ladder.get(0).equalsIgnoreCase(ladder.get(1)))) {
+			System.out.printf("no word ladder can be found between %s and %s.", ladder.get(0), ladder.get(1));
+		}
 		
 		//Print first line
 		int ladderLength = ladder.size() - 2; //Length excludes start and finish nodes.
