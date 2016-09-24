@@ -65,13 +65,21 @@ public class Main {
 		return null;
 	}
 	
+	ArrayList<String> result = new ArrayList<String>();
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
 		
-		// Returned list should be ordered start to end.  Include start and end.
-		// Return empty list if no ladder.
-		// TODO some code
+		
 		Set<String> dict = makeDictionary();
-		// TODO more code
+		LinkedList <String> graph = makeAdjacency(dict);
+		String current = graph.get(graph.indexOf(start));
+		Set <String> visited = dfkd
+	
+		//start of DFS code
+		if(current == null){ //if no path exists at all
+			return new ArrayList;
+		}
+		
+		
 		
 		return null; // replace this line later with real return
 	}
@@ -125,7 +133,7 @@ public class Main {
 		if (inputSet == null) {
 			throw new NullPointerException("inputSet");
 		}
-		if (inputSet.size() > 0) {
+		if (inputSet.size() == 0) {
 			throw new IllegalArgumentException("inputSet length is 0");
 		}
 
