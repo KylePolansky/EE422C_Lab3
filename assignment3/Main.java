@@ -4,9 +4,9 @@
  * <Kyle Polansky>
  * <KPP446>
  * <16480>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * <Nicole Muzquiz>
+ * <ngm339>
+ * <16460>
  * Slip days used: <0>
  * Git URL: https://github.com/KylePolansky/EE422C_Lab3
  * Fall 2016
@@ -119,6 +119,28 @@ public class Main {
 			words.add(infile.next().toUpperCase());
 		}
 		return words;
+	}
+	
+	/**
+	 * This method compares 2 words and computes their hammingdistance
+	 * @param start is the starting word of the word ladder
+	 * @param word is a word from the dictionary we're comparing to
+	 * @return true if the difference between two words 1 letter, false otherwise
+	 */
+	public static boolean hammingDistanceOne(String start, String word){
+		int dist;
+		if (start.length() != word.length()){ //strings must be the same length in order to work
+			return false;
+		}
+		for(int x = 0; x<start.length(); x++){
+			if(start.charAt(0) != word.charAt(x)){
+				dist++;
+			}
+		}
+		if(dist == 1){
+			return true;
+		}
+		return false;
 	}
 
 	/**
