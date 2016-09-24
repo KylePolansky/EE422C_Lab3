@@ -65,23 +65,34 @@ public class Main {
 		return null;
 	}
 	
-	ArrayList<String> result = new ArrayList<String>();
+	static ArrayList<String> result = new ArrayList<String>();
+	static Set <String> visited = new HashSet<String>();
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
 		
 		
 		Set<String> dict = makeDictionary();
-		LinkedList <String> graph = makeAdjacency(dict);
-		String current = graph.get(graph.indexOf(start));
-		Set <String> visited = dfkd
+		LinkedList<String>[] adjList = makeAdjacency(dict);
+		int position = getPosition(adjList, start);
+		String current = adjList[position].getFirst();
+		
 	
 		//start of DFS code
-		if(current == null){ //if no path exists at all
-			return new ArrayList;
+		if(current == null){
+			return new ArrayList();
+		}
+		if(current.equals(end)){
+			return result;
 		}
 		
-		
-		
-		return null; // replace this line later with real return
+		visited.add(current);
+		LinkedList<String> list = adjList[position];
+		for(String s : list) {
+			int startPos = getPosition(adjList,s);
+			if(!(visited.contains(adjList[startPos]))){
+				result.add(current);
+				getWordLadderDFS(start,end);
+			}
+		}
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
