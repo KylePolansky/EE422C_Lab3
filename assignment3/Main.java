@@ -51,7 +51,17 @@ public class Main {
 	 * If command is /quit, return empty ArrayList. 
 	 */
 	public static ArrayList<String> parse(Scanner keyboard) {
-		// TO DO
+		String input = keyboard.nextLine();
+		if (input != null && input.length() > 0) {
+			if (input.equalsIgnoreCase("/quit")) {
+				return new ArrayList<>();
+			}
+			String[] split = input.split(" ");
+			if (split.length == 2){
+				return new ArrayList<String>() {{add(split[0]);	add(split[1]); }};
+			}
+		}
+
 		return null;
 	}
 	
@@ -67,12 +77,48 @@ public class Main {
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
-		
-		// TODO some code
-		Set<String> dict = makeDictionary();
-		// TODO more code
-		
-		return null; // replace this line later with real return
+		ArrayList<String> ladder = new ArrayList<>();
+
+		LinkedList<String>[] adjList = makeAdjacency(makeDictionary());
+
+		boolean[] visited = new boolean[adjList.length];
+		Queue<String> queue = new LinkedList<>();
+
+		int startIndex = getPosition(adjList,start);
+
+		queue.add(adjList[startIndex].getFirst());
+		while (!queue.isEmpty()) {
+			String current = queue.poll();
+			ladder.add(current);
+			if (current.equalsIgnoreCase(end)) {
+				break;
+			}
+			int currentPos = getPosition(adjList,current);
+			visited[currentPos] = true;
+			LinkedList<String> list = adjList[currentPos];
+			for (String s : list) {
+				int sPos = getPosition(adjList,s);
+				if (visited[sPos] == false) {
+					queue.add(adjList[sPos].getFirst());
+					visited[sPos] = true;
+				}
+			}
+		}
+
+		return ladder;
+	}
+
+	private static int getPosition(LinkedList<String>[] graph, String word) {
+		int startIndex = -1;
+
+		for (int i = 0; i < graph.length ; i++) {
+			if (graph[i].getFirst().equalsIgnoreCase(word)) {
+				startIndex = i;
+				break;
+			}
+		}
+
+		return startIndex;
 	}
 
 	private static LinkedList<String>[] makeAdjacency(Set<String> inputSet){
@@ -82,7 +128,7 @@ public class Main {
 		if (inputSet.size() > 0) {
 			throw new IllegalArgumentException("inputSet length is 0");
 		}
-		
+
 		LinkedList<String>[] adjList = new LinkedList[inputSet.size()];
 
 		String[] inputArray = (String[]) inputSet.toArray();
