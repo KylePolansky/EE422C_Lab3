@@ -74,8 +74,38 @@ public class Main {
 		
 		return null; // replace this line later with real return
 	}
+
+	private static LinkedList<String>[] makeAdjacency(Set<String> inputSet){
+		if (inputSet == null) {
+			throw new NullPointerException("inputSet");
+		}
+		if (inputSet.size() > 0) {
+			throw new IllegalArgumentException("inputSet length is 0");
+		}
+		LinkedList<String>[] adjList = new LinkedList[inputSet.size()];
+
+		String[] inputArray = (String[]) inputSet.toArray();
+		for (int i = 0; i < inputSet.size(); i++) {
+			//Make new linked list for current element
+			LinkedList<String> current = new LinkedList<String>();
+			String currentWord = inputArray[i];
+			current.add(inputArray[i]);
+
+			//Go through existing words and see if any match
+			for (int x = 0; x < i; x++) {
+				LinkedList<String> previous = adjList[x];
+				if (hammingDistanceOne(current.getFirst(),previous.getFirst())) {
+					previous.add(currentWord);
+					current.add(previous.getFirst());
+				}
+			}
+			adjList[i] = current;
+		}
+
+		return adjList;
+	}
     
-	public static Set<String>  makeDictionary () {
+	public static Set<String> makeDictionary () {
 		Set<String> words = new HashSet<String>();
 		Scanner infile = null;
 		try {
