@@ -4,9 +4,9 @@
  * <Kyle Polansky>
  * <KPP446>
  * <16480>
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * <Nicole Muzquiz>
+ * <ngm339>
+ * <16460>
  * Slip days used: <0>
  * Git URL: https://github.com/KylePolansky/EE422C_Lab3
  * Fall 2016
