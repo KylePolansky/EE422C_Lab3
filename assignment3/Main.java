@@ -82,12 +82,13 @@ public class Main {
 		if (inputSet.size() > 0) {
 			throw new IllegalArgumentException("inputSet length is 0");
 		}
+		
 		LinkedList<String>[] adjList = new LinkedList[inputSet.size()];
 
 		String[] inputArray = (String[]) inputSet.toArray();
 		for (int i = 0; i < inputSet.size(); i++) {
 			//Make new linked list for current element
-			LinkedList<String> current = new LinkedList<String>();
+			LinkedList<String> current = new LinkedList<>();
 			String currentWord = inputArray[i];
 			current.add(inputArray[i]);
 
@@ -95,6 +96,7 @@ public class Main {
 			for (int x = 0; x < i; x++) {
 				LinkedList<String> previous = adjList[x];
 				if (hammingDistanceOne(current.getFirst(),previous.getFirst())) {
+					//Match found, add to previous list and current list
 					previous.add(currentWord);
 					current.add(previous.getFirst());
 				}
