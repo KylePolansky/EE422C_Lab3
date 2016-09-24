@@ -35,6 +35,11 @@ public class Main {
 			ps = System.out;			// default to Stdout
 		}
 		initialize();
+
+		ArrayList<String> parse = parse(kb);
+		if (parse != null && parse.size() == 2) {
+			printLadder(getWordLadderBFS(parse.get(0), parse.get(1)));
+		}
 		
 		// TODO methods to read in words, output ladder
 	}
@@ -58,7 +63,7 @@ public class Main {
 			}
 			String[] split = input.split(" ");
 			if (split.length == 2){
-				return new ArrayList<String>() {{add(split[0]);	add(split[1]); }};
+				return new ArrayList<String>() {{add(split[0].toUpperCase());	add(split[1].toUpperCase()); }};
 			}
 		}
 
@@ -68,8 +73,8 @@ public class Main {
 	static ArrayList<String> result = new ArrayList<String>();
 	static Set <String> visited = new HashSet<String>();
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		
-		
+
+
 		Set<String> dict = makeDictionary();
 		LinkedList<String>[] adjList = makeAdjacency(dict);
 		int position = getPosition(adjList, start);
@@ -94,10 +99,10 @@ public class Main {
 			}
 		}
 	}
-	
+
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		ArrayList<String> ladder = new ArrayList<>();
-
+		Map<String, String> previousNodes = new HashMap<>();
 		LinkedList<String>[] adjList = makeAdjacency(makeDictionary());
 
 		boolean[] visited = new boolean[adjList.length];
@@ -108,21 +113,36 @@ public class Main {
 		queue.add(adjList[startIndex].getFirst());
 		while (!queue.isEmpty()) {
 			String current = queue.poll();
-			ladder.add(current);
+
+			//End if found the end
 			if (current.equalsIgnoreCase(end)) {
 				break;
 			}
 			int currentPos = getPosition(adjList,current);
 			visited[currentPos] = true;
 			LinkedList<String> list = adjList[currentPos];
+
+			//Go through each edge for a node
 			for (String s : list) {
 				int sPos = getPosition(adjList,s);
+				String sString = adjList[sPos].getFirst();
+
+				//If not visited, add to queue
 				if (visited[sPos] == false) {
-					queue.add(adjList[sPos].getFirst());
+					queue.add(sString);
 					visited[sPos] = true;
+					previousNodes.put(sString, current);
 				}
 			}
 		}
+
+		//Build Ladder
+		for(String node = end; node != null; node = previousNodes.get(node)) {
+			ladder.add(node);
+		}
+
+		//Reverse since traversing from end to start
+		Collections.reverse(ladder);
 
 		return ladder;
 	}
@@ -150,7 +170,11 @@ public class Main {
 
 		LinkedList<String>[] adjList = new LinkedList[inputSet.size()];
 
-		String[] inputArray = (String[]) inputSet.toArray();
+		Object[] inputSetArray = inputSet.toArray();
+		String[] inputArray = new String[inputSetArray.length];
+		for (int i = 0; i < inputSetArray.length; i++) {
+			inputArray[i] = (String) inputSetArray[i];
+		}
 		for (int i = 0; i < inputSet.size(); i++) {
 			//Make new linked list for current element
 			LinkedList<String> current = new LinkedList<>();
@@ -229,7 +253,7 @@ public class Main {
 		
 		//Print first line
 		int ladderLength = ladder.size() - 2; //Length excludes start and finish nodes.
-		System.out.printf("a %d-rung word ladder exists between smart and money.\n", ladderLength);
+		System.out.printf("a %d-rung word ladder exists between %s and %s.\n", ladderLength, ladder.get(0), ladder.get(ladderLength-1));
 
 		//Print all array elements
 		for (int i = 0; i < ladder.size(); i++) {
