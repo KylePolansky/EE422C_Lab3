@@ -129,11 +129,14 @@ public class Main {
 	 */
 	public static boolean hammingDistanceOne(String start, String word){
 		int dist = 0;
+		if (start == null || word == null) {
+			throw new NullPointerException();
+		}
 		if (start.length() != word.length()){ //strings must be the same length in order to work
 			return false;
 		}
-		for(int x = 0; x<start.length(); x++){
-			if(start.charAt(0) != word.charAt(x)){
+		for(int x = 0; x < start.length(); x++){
+			if(start.charAt(x) != word.charAt(x)){
 				dist++;
 			}
 		}
