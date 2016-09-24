@@ -128,7 +128,7 @@ public class Main {
 	 * @return true if the difference between two words 1 letter, false otherwise
 	 */
 	public static boolean hammingDistanceOne(String start, String word){
-		int dist;
+		int dist = 0;
 		if (start.length() != word.length()){ //strings must be the same length in order to work
 			return false;
 		}
