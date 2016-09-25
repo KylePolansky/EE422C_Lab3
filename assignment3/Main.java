@@ -113,7 +113,7 @@ public class Main {
         return null;
     }
 
-    public static ArrayList<String> getWordLadderBFS(String start, String end) {
+    public static ArrayList<String> getWordLadderBFS(final String start, final String end) {
         if (start.equalsIgnoreCase(end)) {
             return new ArrayList<String>() {{
                 add(start);
