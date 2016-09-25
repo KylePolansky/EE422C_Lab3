@@ -15,6 +15,7 @@
 
 package assignment3;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
 
@@ -41,8 +42,11 @@ public class Main {
         ArrayList<String> parse = parse(kb);
         if (parse != null && parse.size() == 2) {
             try {
-                ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
-                printLadder(bfs);
+//                ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
+//                printLadder(bfs);
+
+                ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
+                printLadder(dfs);
             } catch (Exception e) {
                 System.out.printf("no word ladder can be found between %s and %s.", parse.get(0), parse.get(1));
             }
@@ -53,10 +57,12 @@ public class Main {
         // TODO methods to read in words, output ladder
     }
 
+    public static Set<String> dictionary;
+    public static LinkedList<String>[] adjList;
+    static Set<String> visited = new HashSet<String>();
     public static void initialize() {
-        // initialize your static variables or constants here.
-        // We will call this method before running our JUNIT tests.  So call it
-        // only once at the start of main.
+        dictionary = makeDictionary();
+        adjList = makeAdjacency(dictionary);
     }
 
     /**
@@ -82,35 +88,34 @@ public class Main {
         return null;
     }
 
-    static ArrayList<String> result = new ArrayList<String>();
-    static Set<String> visited = new HashSet<String>();
 
     public static ArrayList<String> getWordLadderDFS(String start, String end) {
+        return getWordLadderDFSprivate(start,end,new ArrayList<String>());
+    }
 
-        Set<String> dict = makeDictionary();
-        LinkedList<String>[] adjList = makeAdjacency(dict);
-        int position = getPosition(adjList, start);
-        String current = adjList[position].getFirst();
+    private static ArrayList<String> getWordLadderDFSprivate(String start, String end, ArrayList<String> result) {
 
+        int startPosition = getPosition(adjList, start);
+        String currentString = start;
+        visited.add(currentString);
 
-        //start of DFS code
-        if (current == null) {
-            return new ArrayList();
-        }
-        if (current.equals(end)) {
+        if (currentString.equalsIgnoreCase(end)) {
+            result.add(currentString);
             return result;
         }
 
-        visited.add(current);
-        LinkedList<String> list = adjList[position];
-        for (String s : list) {
+        LinkedList<String> startList = adjList[startPosition];
+        for (String s : startList) {
             int startPos = getPosition(adjList, s);
-            if (!(visited.contains(adjList[startPos]))) {
-                result.add(current);
-                getWordLadderDFS(start, end);
+            if (!(visited.contains(adjList[startPos].getFirst()))) {
+                result.add(currentString);
+                ArrayList<String> al = getWordLadderDFSprivate(s, end, result);
+                if (al.size() > 1) {
+                    return al;
+                }
             }
         }
-        return null;
+        return new ArrayList();
     }
 
     public static ArrayList<String> getWordLadderBFS(final String start, final String end) {
@@ -120,9 +125,9 @@ public class Main {
                 add(end);
             }};
         }
+
         ArrayList<String> ladder = new ArrayList<>();
         Map<String, String> previousNodes = new HashMap<>();
-        LinkedList<String>[] adjList = makeAdjacency(makeDictionary());
 
         boolean[] visited = new boolean[adjList.length];
         Queue<String> queue = new LinkedList<>();
@@ -223,8 +228,8 @@ public class Main {
         Set<String> words = new HashSet<String>();
         Scanner infile = null;
         try {
-//			infile = new Scanner (new File("five_letter_words.txt"));
-            infile = new Scanner(new File("short_dict.txt"));
+			infile = new Scanner (new File("five_letter_words.txt"));
+//            infile = new Scanner(new File("short_dict.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Dictionary File not Found!");
             e.printStackTrace();
