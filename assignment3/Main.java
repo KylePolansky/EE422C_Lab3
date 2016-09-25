@@ -70,7 +70,7 @@ public class Main {
             if (input.equalsIgnoreCase("/quit")) {
                 return new ArrayList<>();
             }
-            String[] split = input.split(" ");
+            final String[] split = input.split(" ");
             if (split.length == 2) {
                 return new ArrayList<String>() {{
                     add(split[0].toUpperCase());
