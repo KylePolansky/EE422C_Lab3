@@ -20,8 +20,6 @@ import java.io.*;
 
 public class Main {
 
-    // static variables and constants only here.
-
     public static void main(String[] args) throws Exception {
 
         Scanner kb;    // input Scanner for commands
@@ -52,8 +50,6 @@ public class Main {
         } else {
             System.out.println("Invalid Input");
         }
-
-        // TODO methods to read in words, output ladder
     }
 
     public static Set<String> dictionary;
@@ -73,9 +69,9 @@ public class Main {
         String input = keyboard.nextLine();
         if (input != null && input.length() > 0) {
             if (input.equalsIgnoreCase("/quit")) {
-                return new ArrayList<>();
+                System.exit(0);
             }
-            final String[] split = input.split(" ");
+            final String[] split = input.split("\\s+");
             if (split.length == 2) {
                 return new ArrayList<String>() {{
                     add(split[0].toUpperCase());
@@ -87,7 +83,11 @@ public class Main {
         return null;
     }
 
-
+    /**
+     * @param start first word in the ladder
+     * @param end last word in the latter
+     * @return an ArrayList containing the WordLadder as determined by DFS algorithm
+     */
     public static ArrayList<String> getWordLadderDFS(String start, String end) {
         return getWordLadderDFSprivate(start,end,new ArrayList<String>());
     }
@@ -117,6 +117,12 @@ public class Main {
         return new ArrayList();
     }
 
+    /**
+     * Gets a word ladder using BFS algorithm
+     * @param start the first word of the word ladder
+     * @param end the last word of the word ladder
+     * @return the word ladder
+     */
     public static ArrayList<String> getWordLadderBFS(final String start, final String end) {
         if (start.equalsIgnoreCase(end)) {
             return new ArrayList<String>() {{
@@ -174,6 +180,12 @@ public class Main {
         return ladder;
     }
 
+    /**
+     * Gets the index of a string in an adjacency list
+     * @param graph the adjacency list
+     * @param word the word to find
+     * @return -1 if doesn't exist, else the position of the word
+     */
     private static int getPosition(LinkedList<String>[] graph, String word) {
         int startIndex = -1;
 
@@ -187,6 +199,11 @@ public class Main {
         return startIndex;
     }
 
+    /**
+     * Make an Adjacency list to easily traverse words in the dictionary
+     * @param inputSet the Dictionary file to make a list out of
+     * @return The Adjacency list.
+     */
     private static LinkedList<String>[] makeAdjacency(Set<String> inputSet) {
         if (inputSet == null) {
             throw new NullPointerException("inputSet");
@@ -223,12 +240,16 @@ public class Main {
         return adjList;
     }
 
+    /**
+     * Reads files from input file and makes a dictionary
+     * @return a Set containing all the words in the dictionary
+     */
     public static Set<String> makeDictionary() {
         Set<String> words = new HashSet<String>();
         Scanner infile = null;
         try {
-			infile = new Scanner (new File("five_letter_words.txt"));
-//            infile = new Scanner(new File("short_dict.txt"));
+//			infile = new Scanner (new File("five_letter_words.txt"));
+            infile = new Scanner(new File("short_dict.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Dictionary File not Found!");
             e.printStackTrace();
@@ -270,19 +291,23 @@ public class Main {
      * @param ladder WordLadder to output
      */
     public static void printLadder(ArrayList<String> ladder) {
-        if (ladder == null || ladder.size() < 2) {
+        if (ladder == null || ladder.size() < 1) {
             throw new NullPointerException("ladder is null or less than 2");
+        }
+
+        String f = ladder.get(0).toLowerCase();
+        if (ladder.size() == 1) {
+            System.out.printf("a 0-rung word ladder exists between %s and %s.\n%s\n%s\n", f,f,f,f);
+            return;
         }
 
         //Print first line
         int ladderLength = ladder.size() - 2; //Length excludes start and finish nodes.
-        System.out.printf("a %d-rung word ladder exists between %s and %s.\n", ladderLength, ladder.get(0), ladder.get(ladder.size() - 1));
+        System.out.printf("a %d-rung word ladder exists between %s and %s.\n", ladderLength, f, ladder.get(ladder.size() - 1).toLowerCase());
 
         //Print all array elements
         for (int i = 0; i < ladder.size(); i++) {
-            System.out.println(ladder.get(i));
+            System.out.println(ladder.get(i).toLowerCase());
         }
     }
-    // TODO
-    // Other private static methods here
 }
