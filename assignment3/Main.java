@@ -35,26 +35,29 @@ public class Main {
         }
         initialize();
 
-        System.out.println("Input start and end words or /quit to quit");
-        ArrayList<String> parse = parse(kb);
-        if (parse != null && parse.size() == 2) {
-            try {
-//                ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
-//                printLadder(bfs);
+        while (true) {
+            ps.println("Input start and end words or /quit to quit");
+            ArrayList<String> parse = parse(kb);
+            if (parse != null && parse.size() == 2) {
+                try {
+//                    ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
+//                    printLadder(bfs);
+                    
 
-                ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
-                printLadder(dfs);
-            } catch (Exception e) {
-                System.out.printf("no word ladder can be found between %s and %s.", parse.get(0), parse.get(1));
+                    ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
+                    printLadder(dfs);
+                } catch (Exception e) {
+                    ps.printf("no word ladder can be found between %s and %s.\n", parse.get(0), parse.get(1));
+                }
+            } else {
+                ps.println("Invalid Input");
             }
-        } else {
-            System.out.println("Invalid Input");
         }
     }
 
     public static Set<String> dictionary;
-    public static LinkedList<String>[] adjList;
-    static Set<String> visited = new HashSet<String>();
+    public static HashMap<String, HashSet<String>> adjList;
+    static Set<String> visited = new HashSet<>();
     public static void initialize() {
         dictionary = makeDictionary();
         adjList = makeAdjacency(dictionary);
@@ -89,25 +92,25 @@ public class Main {
      * @return an ArrayList containing the WordLadder as determined by DFS algorithm
      */
     public static ArrayList<String> getWordLadderDFS(String start, String end) {
-        return getWordLadderDFSprivate(start,end,new ArrayList<String>());
+        visited = new HashSet<>();
+        if (adjList.containsKey(start) && adjList.containsKey(end)) {
+            return getWordLadderDFSprivate(start, end, new ArrayList<>());
+        }
+        else {
+            return new ArrayList<>();
+        }
     }
 
     private static ArrayList<String> getWordLadderDFSprivate(String start, String end, ArrayList<String> result) {
+        visited.add(start);
+        result.add(start);
 
-        int startPosition = getPosition(adjList, start);
-        String currentString = start;
-        visited.add(currentString);
-
-        if (currentString.equalsIgnoreCase(end)) {
-            result.add(currentString);
+        if (start.equalsIgnoreCase(end)) {
             return result;
         }
 
-        LinkedList<String> startList = adjList[startPosition];
-        for (String s : startList) {
-            int startPos = getPosition(adjList, s);
-            if (!(visited.contains(adjList[startPos].getFirst()))) {
-                result.add(currentString);
+        for (String s : adjList.get(start)) {
+            if (!(visited.contains(s))) {
                 ArrayList<String> al = getWordLadderDFSprivate(s, end, result);
                 if (al.size() > 1) {
                     return al;
@@ -124,49 +127,45 @@ public class Main {
      * @return the word ladder
      */
     public static ArrayList<String> getWordLadderBFS(final String start, final String end) {
-        if (start.equalsIgnoreCase(end)) {
-            return new ArrayList<String>() {{
-                add(start);
-                add(end);
-            }};
+        //Start == End
+        if (start.equals(end)) {
+            return new ArrayList<String>() {{ add(start); add(end); }};
         }
 
         ArrayList<String> ladder = new ArrayList<>();
         Map<String, String> previousNodes = new HashMap<>();
 
-        boolean[] visited = new boolean[adjList.length];
+        visited = new HashSet<>();
         Queue<String> queue = new LinkedList<>();
 
-        int startIndex = getPosition(adjList, start);
-
-        if (startIndex == -1) {
+        if (!adjList.containsKey(start)) {
             return new ArrayList<>(); //Start word cannot be found in dictionary
         }
 
-        queue.add(adjList[startIndex].getFirst());
+        queue.add(start);
+
         while (!queue.isEmpty()) {
-            String current = queue.poll();
+            String currentString = queue.poll();
 
             //End if found the end
-            if (current.equalsIgnoreCase(end)) {
+            if (currentString.equals(end)) {
                 break;
             }
-            int currentPos = getPosition(adjList, current);
-            visited[currentPos] = true;
-            LinkedList<String> list = adjList[currentPos];
+
+            visited.add(currentString);
 
             //Go through each edge for a node
-            for (String s : list) {
-                int sPos = getPosition(adjList, s);
-                String sString = adjList[sPos].getFirst();
+            //If not visited, add to queue and track previous nodes
+            adjList.get(currentString).stream().filter(s -> !visited.contains(s)).forEach(s -> {
+                queue.add(s);
+                visited.add(s);
+                previousNodes.put(s, currentString);
+            });
+        }
 
-                //If not visited, add to queue
-                if (visited[sPos] == false) {
-                    queue.add(sString);
-                    visited[sPos] = true;
-                    previousNodes.put(sString, current);
-                }
-            }
+        //Check valid ladder
+        if (!previousNodes.containsKey(end)) {
+            return ladder;
         }
 
         //Build Ladder
@@ -181,75 +180,15 @@ public class Main {
     }
 
     /**
-     * Gets the index of a string in an adjacency list
-     * @param graph the adjacency list
-     * @param word the word to find
-     * @return -1 if doesn't exist, else the position of the word
-     */
-    private static int getPosition(LinkedList<String>[] graph, String word) {
-        int startIndex = -1;
-
-        for (int i = 0; i < graph.length; i++) {
-            if (graph[i].getFirst().equalsIgnoreCase(word)) {
-                startIndex = i;
-                break;
-            }
-        }
-
-        return startIndex;
-    }
-
-    /**
-     * Make an Adjacency list to easily traverse words in the dictionary
-     * @param inputSet the Dictionary file to make a list out of
-     * @return The Adjacency list.
-     */
-    private static LinkedList<String>[] makeAdjacency(Set<String> inputSet) {
-        if (inputSet == null) {
-            throw new NullPointerException("inputSet");
-        }
-        if (inputSet.size() == 0) {
-            throw new IllegalArgumentException("inputSet length is 0");
-        }
-
-        LinkedList<String>[] adjList = new LinkedList[inputSet.size()];
-
-        Object[] inputSetArray = inputSet.toArray();
-        String[] inputArray = new String[inputSetArray.length];
-        for (int i = 0; i < inputSetArray.length; i++) {
-            inputArray[i] = (String) inputSetArray[i];
-        }
-        for (int i = 0; i < inputSet.size(); i++) {
-            //Make new linked list for current element
-            LinkedList<String> current = new LinkedList<>();
-            String currentWord = inputArray[i];
-            current.add(inputArray[i]);
-
-            //Go through existing words and see if any match
-            for (int x = 0; x < i; x++) {
-                LinkedList<String> previous = adjList[x];
-                if (hammingDistanceOne(current.getFirst(), previous.getFirst())) {
-                    //Match found, add to previous list and current list
-                    previous.add(currentWord);
-                    current.add(previous.getFirst());
-                }
-            }
-            adjList[i] = current;
-        }
-
-        return adjList;
-    }
-
-    /**
      * Reads files from input file and makes a dictionary
      * @return a Set containing all the words in the dictionary
      */
     public static Set<String> makeDictionary() {
-        Set<String> words = new HashSet<String>();
+        Set<String> words = new HashSet<>();
         Scanner infile = null;
         try {
-//			infile = new Scanner (new File("five_letter_words.txt"));
-            infile = new Scanner(new File("short_dict.txt"));
+			infile = new Scanner (new File("five_letter_words.txt"));
+//            infile = new Scanner(new File("short_dict.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Dictionary File not Found!");
             e.printStackTrace();
@@ -260,6 +199,36 @@ public class Main {
         }
         return words;
     }
+
+    /**
+     * Make an Adjacency list to easily traverse words in the dictionary
+     * @param inputSet the Dictionary file to make a list out of
+     * @return The Adjacency list.
+     */
+    private static HashMap<String,HashSet<String>> makeAdjacency(Set<String> inputSet) {
+        if (inputSet == null) {
+            throw new NullPointerException("inputSet");
+        }
+        if (inputSet.size() == 0) {
+            throw new IllegalArgumentException("inputSet length is 0");
+        }
+
+        HashMap<String,HashSet<String>> adjList = new HashMap<>();
+
+        for (String keyString : inputSet) {
+            HashSet<String> currentHS = new HashSet<>();
+            currentHS.add(keyString);
+            inputSet.stream().filter(otherString -> hammingDistanceOne(keyString, otherString)).forEach(otherString -> {
+                currentHS.add(otherString);
+                if (adjList.containsKey(otherString)) {
+                    adjList.get(otherString).add(keyString);
+                }
+            });
+            adjList.put(keyString, currentHS);
+        }
+        return adjList;
+    }
+
 
     /**
      * This method compares 2 words and computes their hammingdistance
