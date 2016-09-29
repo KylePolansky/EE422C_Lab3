@@ -35,22 +35,16 @@ public class Main {
         }
         initialize();
 
-        while (true) {
-            ps.println("Input start and end words or /quit to quit");
-            ArrayList<String> parse = parse(kb);
-            if (parse != null && parse.size() == 2) {
-                try {
-//                    ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
-//                    printLadder(bfs);
-                    
+        ArrayList<String> parse = parse(kb);
+        if (parse != null && parse.size() == 2) {
+            try {
+                ArrayList<String> bfs = getWordLadderBFS(parse.get(0), parse.get(1));
+                printLadder(bfs);
 
-                    ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
-                    printLadder(dfs);
-                } catch (Exception e) {
-                    ps.printf("no word ladder can be found between %s and %s.\n", parse.get(0), parse.get(1));
-                }
-            } else {
-                ps.println("Invalid Input");
+//                ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
+//                printLadder(dfs);
+            } catch (Exception e) {
+                ps.printf("no word ladder can be found between %s and %s.\n", parse.get(0), parse.get(1));
             }
         }
     }
