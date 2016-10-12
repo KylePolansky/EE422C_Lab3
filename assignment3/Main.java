@@ -44,7 +44,7 @@ public class Main {
 //                ArrayList<String> dfs = getWordLadderDFS(parse.get(0), parse.get(1));
 //                printLadder(dfs);
             } catch (Exception e) {
-                ps.printf("no word ladder can be found between %s and %s.\n", parse.get(0), parse.get(1));
+                ps.printf("no word ladder can be found between %s and %s.\n", parse.get(0).toLowerCase(), parse.get(1).toLowerCase());
             }
         }
     }
