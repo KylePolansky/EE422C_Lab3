@@ -86,6 +86,9 @@ public class Main {
      * @return an ArrayList containing the WordLadder as determined by DFS algorithm
      */
     public static ArrayList<String> getWordLadderDFS(String start, String end) {
+        //Accept non-all upper case input
+        start = start.toUpperCase();
+        end = end.toUpperCase();
         visited = new HashSet<>();
         if (adjList.containsKey(start) && adjList.containsKey(end)) {
             return getWordLadderDFSprivate(start, end, new ArrayList<>());
@@ -120,10 +123,14 @@ public class Main {
      * @param end the last word of the word ladder
      * @return the word ladder
      */
-    public static ArrayList<String> getWordLadderBFS(final String start, final String end) {
+    public static ArrayList<String> getWordLadderBFS(String start, String end) {
+        //Accept non-all upper case input
+        start = start.toUpperCase();
+        end = end.toUpperCase();
         //Start == End
         if (start.equals(end)) {
-            return new ArrayList<String>() {{ add(start); add(end); }};
+            ArrayList<String> returnList = new ArrayList<>();
+            returnList.add(start);
         }
 
         ArrayList<String> ladder = new ArrayList<>();
